@@ -488,7 +488,7 @@ void QVOptionsDialog::populateCategories(int selectedRow)
     const int iconSize = 24;
     const int listRightPadding = 3;
     auto addItem = [&](const QChar &iconChar, const QString &text) {
-        ui->categoryList->addItem(new QListWidgetItem(qvApp->iconFromFont("Material Icons Outlined", iconChar, iconSize, devicePixelRatioF()), text));
+        ui->categoryList->addItem(new QListWidgetItem(QVApplication::iconFromFont("Material Icons Outlined", iconChar, iconSize, devicePixelRatioF()), text));
     };
     ui->categoryList->setIconSize(QSize(iconSize, iconSize));
     ui->categoryList->setFont(QApplication::font());
