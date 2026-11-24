@@ -3,6 +3,7 @@
 
 #include "openwith.h"
 
+#include <QColor>
 #include <qfileiconprovider.h>
 
 class QVWin32Functions
@@ -17,6 +18,11 @@ public:
     static QStringList getCommandLineArgs();
 
     static QByteArray getIccProfileForWindow(const QWindow *window);
+
+    static void setTitlebarColor(const QWindow *window, const QColor &captionColor,
+                                 const QColor &textColor);
+
+    static void resetTitlebarColor(const QWindow *window);
 };
 
 #endif // QVWIN32FUNCTIONS_H

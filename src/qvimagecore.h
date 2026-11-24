@@ -51,6 +51,7 @@ public:
         bool isMovieLoaded = false;
         QSize baseImageSize;
         QSize loadedPixmapSize;
+        QColor topStripColor;
         QElapsedTimer timeSinceLoaded;
         ErrorData errorData;
 
@@ -78,6 +79,7 @@ public:
         qint64 fileSize;
         QSize imageSize;
         QColorSpace targetColorSpace;
+        QColor topStripColor;
         ErrorData errorData;
     };
 
@@ -96,6 +98,7 @@ public:
                                      const QColorSpace &targetColorSpace);
     QColorSpace getTargetColorSpace() const;
     QColorSpace detectDisplayColorSpace() const;
+    static QColor computeTopStripColor(const QImage &image);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0) && QT_VERSION < QT_VERSION_CHECK(6, 7, 2)
     static bool removeTinyDataTagsFromIccProfile(QByteArray &profile);
 #endif

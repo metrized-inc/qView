@@ -158,9 +158,11 @@ QVImageCore::ReadData QVImageCore::readFile(const QString &fileName,
 
     QFileInfo fileInfo(fileName);
 
+    const QColor topStripColor = computeTopStripColor(readImage);
+
     ReadData readData = { readImage,        fileInfo.absoluteFilePath(),
                           fileInfo.size(),  imageReader.size(),
-                          targetColorSpace, {} };
+                          targetColorSpace, topStripColor, {} };
 
     if (readImage.isNull()) {
         readData.errorData = { true, imageReader.error(), imageReader.errorString() };
@@ -192,12 +194,15 @@ void QVImageCore::loadPixmap(const ReadData &readData)
         return;
     }
 
-    loadedPixmap = QPixmap::fromImage(matchCurrentRotation(readData.image));
+    const QImage displayImage = matchCurrentRotation(readData.image);
+    loadedPixmap = QPixmap::fromImage(displayImage);
 
     // Set file details
     currentFileDetails.isPixmapLoaded = true;
     currentFileDetails.baseImageSize = readData.imageSize;
     currentFileDetails.loadedPixmapSize = loadedPixmap.size();
+    currentFileDetails.topStripColor =
+            (currentRotation == 0) ? readData.topStripColor : computeTopStripColor(displayImage);
     if (currentFileDetails.baseImageSize == QSize(-1, -1)) {
         qInfo() << "QImageReader::size gave an invalid size for "
                         + currentFileDetails.fileInfo.fileName()
@@ -259,6 +264,7 @@ QVImageCore::FileDetails QVImageCore::getEmptyFileDetails()
              false,
              QSize(),
              QSize(),
+             QColor(),
              QElapsedTimer(),
              {} };
 }
@@ -659,7 +665,59 @@ void QVImageCore::rotateImage(int rotation)
     loadedPixmap.convertFromImage(transformedImage);
 
     currentFileDetails.loadedPixmapSize = QSize(loadedPixmap.width(), loadedPixmap.height());
+    currentFileDetails.topStripColor = computeTopStripColor(transformedImage);
     emit updateLoadedPixmapItem();
+}
+
+QColor QVImageCore::computeTopStripColor(const QImage &image)
+{
+    if (image.isNull() || image.width() <= 0 || image.height() <= 0)
+        return {};
+
+    const int width = image.width();
+    const int stripHeight = qMax(1, image.height() / 10);
+    const int rowStep = qMax(1, stripHeight / 16);
+    const int colStep = qMax(1, width / 64);
+
+    quint64 rSum = 0;
+    quint64 gSum = 0;
+    quint64 bSum = 0;
+    quint64 aSum = 0;
+    quint64 count = 0;
+
+    if (image.format() == QImage::Format_ARGB32_Premultiplied) {
+        for (int y = 0; y < stripHeight; y += rowStep) {
+            const QRgb *line = reinterpret_cast<const QRgb *>(image.constScanLine(y));
+            for (int x = 0; x < width; x += colStep) {
+                const QRgb px = line[x];
+                rSum += qRed(px);
+                gSum += qGreen(px);
+                bSum += qBlue(px);
+                aSum += qAlpha(px);
+                ++count;
+            }
+        }
+    } else {
+        for (int y = 0; y < stripHeight; y += rowStep) {
+            for (int x = 0; x < width; x += colStep) {
+                const QColor c = image.pixelColor(x, y);
+                const int a = c.alpha();
+                rSum += static_cast<quint64>((c.red() * a + 127) / 255);
+                gSum += static_cast<quint64>((c.green() * a + 127) / 255);
+                bSum += static_cast<quint64>((c.blue() * a + 127) / 255);
+                aSum += static_cast<quint64>(a);
+                ++count;
+            }
+        }
+    }
+
+    if (count == 0)
+        return {};
+
+    return QColor(static_cast<int>((rSum + count / 2) / count),
+                  static_cast<int>((gSum + count / 2) / count),
+                  static_cast<int>((bSum + count / 2) / count),
+                  static_cast<int>((aSum + count / 2) / count));
 }
 
 QImage QVImageCore::matchCurrentRotation(const QImage &imageToRotate)

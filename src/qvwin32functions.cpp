@@ -6,6 +6,20 @@
 #include "Objbase.h"
 #include "appmodel.h"
 #include "Shlwapi.h"
+#include <dwmapi.h>
+
+#ifndef DWMWA_USE_IMMERSIVE_DARK_MODE
+#  define DWMWA_USE_IMMERSIVE_DARK_MODE 20
+#endif
+#ifndef DWMWA_CAPTION_COLOR
+#  define DWMWA_CAPTION_COLOR 35
+#endif
+#ifndef DWMWA_TEXT_COLOR
+#  define DWMWA_TEXT_COLOR 36
+#endif
+#ifndef DWMWA_COLOR_DEFAULT
+#  define DWMWA_COLOR_DEFAULT 0xFFFFFFFF
+#endif
 
 #include <QFileInfo>
 #include <QFile>
@@ -176,4 +190,37 @@ QByteArray QVWin32Functions::getIccProfileForWindow(const QWindow *window)
         }
     }
     return result;
+}
+
+void QVWin32Functions::setTitlebarColor(const QWindow *window, const QColor &captionColor,
+                                        const QColor &textColor)
+{
+    if (!window)
+        return;
+
+    const HWND hWnd = reinterpret_cast<HWND>(window->winId());
+    if (!hWnd)
+        return;
+
+    const BOOL useDark = (textColor.lightness() > 127) ? TRUE : FALSE;
+    const COLORREF captionRef = RGB(captionColor.red(), captionColor.green(), captionColor.blue());
+    const COLORREF textRef = RGB(textColor.red(), textColor.green(), textColor.blue());
+
+    DwmSetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &useDark, sizeof(useDark));
+    DwmSetWindowAttribute(hWnd, DWMWA_CAPTION_COLOR, &captionRef, sizeof(captionRef));
+    DwmSetWindowAttribute(hWnd, DWMWA_TEXT_COLOR, &textRef, sizeof(textRef));
+}
+
+void QVWin32Functions::resetTitlebarColor(const QWindow *window)
+{
+    if (!window)
+        return;
+
+    const HWND hWnd = reinterpret_cast<HWND>(window->winId());
+    if (!hWnd)
+        return;
+
+    const COLORREF defaultColor = DWMWA_COLOR_DEFAULT;
+    DwmSetWindowAttribute(hWnd, DWMWA_CAPTION_COLOR, &defaultColor, sizeof(defaultColor));
+    DwmSetWindowAttribute(hWnd, DWMWA_TEXT_COLOR, &defaultColor, sizeof(defaultColor));
 }

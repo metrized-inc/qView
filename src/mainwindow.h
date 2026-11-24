@@ -37,6 +37,8 @@ public:
 
     void updateWindowTitle();
 
+    void updateTitlebarColor();
+
     void updateWindowFilePath();
 
     void setWindowSize();

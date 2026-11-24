@@ -159,7 +159,7 @@ if(WIN32)
     # Windows specific: link to Win32 libraries, set icon, and define as a Windows executable.
     if(NOT NO_WIN32)
         target_compile_definitions(${PROJECT_NAME} PRIVATE WIN32_LOADED)
-        set(PLATFORM_SPECIFIC_LIBS shell32 user32 ole32 shlwapi gdi32)
+        set(PLATFORM_SPECIFIC_LIBS shell32 user32 ole32 shlwapi gdi32 dwmapi)
         target_link_libraries(${PROJECT_NAME} PRIVATE ${PLATFORM_SPECIFIC_LIBS})
     endif()
 elseif(APPLE)

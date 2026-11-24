@@ -2,6 +2,9 @@
 #include "ui_mainwindow.h"
 #include "qvapplication.h"
 #include "qvcocoafunctions.h"
+#ifdef WIN32_LOADED
+#  include "qvwin32functions.h"
+#endif
 #include "qvrenamedialog.h"
 
 #include <QFileDialog>
@@ -208,6 +211,7 @@ void MainWindow::showEvent(QShowEvent *event)
     }
 
     QMainWindow::showEvent(event);
+    updateTitlebarColor();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -336,6 +340,7 @@ void MainWindow::settingsUpdated()
     customBackgroundColor = settingsManager.getBool(SettingsManager::Setting::BgColorEnabled)
             ? QColor(settingsManager.getString(SettingsManager::Setting::BgColor))
             : QColor();
+    updateTitlebarColor();
 
     // menubarenabled
     bool menuBarEnabled = settingsManager.getBool(SettingsManager::Setting::MenuBarEnabled);
@@ -398,6 +403,7 @@ void MainWindow::fileChanged()
     if (info->isVisible())
         refreshProperties();
     updateWindowTitle();
+    updateTitlebarColor();
     updateWindowFilePath();
 
     // repaint to handle error message
@@ -520,6 +526,33 @@ void MainWindow::updateWindowTitle()
 
     // Update fullscreen label to titlebar text as well
     ui->fullscreenLabel->setText(newString);
+}
+
+void MainWindow::updateTitlebarColor()
+{
+#if defined Q_OS_WIN && WIN32_LOADED
+    if (!windowHandle())
+        return;
+
+    const auto &details = getCurrentFileDetails();
+    if (!details.isPixmapLoaded || !details.topStripColor.isValid()) {
+        QVWin32Functions::resetTitlebarColor(windowHandle());
+        return;
+    }
+
+    const QColor raw = details.topStripColor;
+    const QColor bg = customBackgroundColor.isValid() ? customBackgroundColor
+                                                      : palette().color(QPalette::Window);
+    const int invAlpha = 255 - raw.alpha();
+    const QColor captionColor(qBound(0, raw.red() + (bg.red() * invAlpha + 127) / 255, 255),
+                              qBound(0, raw.green() + (bg.green() * invAlpha + 127) / 255, 255),
+                              qBound(0, raw.blue() + (bg.blue() * invAlpha + 127) / 255, 255));
+    const QColor textColor = QVApplication::getPerceivedBrightness(captionColor) > 0.5
+            ? QColor(Qt::black)
+            : QColor(Qt::white);
+
+    QVWin32Functions::setTitlebarColor(windowHandle(), captionColor, textColor);
+#endif
 }
 
 void MainWindow::updateWindowFilePath()
@@ -1006,12 +1039,14 @@ void MainWindow::originalSize()
 void MainWindow::rotateRight()
 {
     graphicsView->rotateImage(90);
+    updateTitlebarColor();
     resetZoom();
 }
 
 void MainWindow::rotateLeft()
 {
     graphicsView->rotateImage(-90);
+    updateTitlebarColor();
     resetZoom();
 }
 
