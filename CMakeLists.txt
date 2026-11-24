@@ -58,6 +58,7 @@ set(PROJECT_SOURCES
     src/qvrenamedialog.cpp
     src/qvwelcomedialog.cpp
     src/qvinfodialog.cpp
+    src/qvimagemetadata.cpp
     src/qvimagecore.cpp
     src/qvshortcutdialog.cpp
     src/actionmanager.cpp
@@ -76,6 +77,7 @@ set(PROJECT_HEADERS
     src/qvrenamedialog.h
     src/qvwelcomedialog.h
     src/qvinfodialog.h
+    src/qvimagemetadata.h
     src/qvimagecore.h
     src/qvshortcutdialog.h
     src/actionmanager.h

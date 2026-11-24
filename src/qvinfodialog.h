@@ -9,6 +9,8 @@ namespace Ui {
 class QVInfoDialog;
 }
 
+class QVMetadataSection;
+
 class QVInfoDialog : public QDialog
 {
     Q_OBJECT
@@ -22,6 +24,8 @@ public:
     void updateInfo();
 
 private:
+    void openMetadataInEditor(const QString &key, const QString &value);
+
     Ui::QVInfoDialog *ui;
 
     QFileInfo selectedFileInfo;
@@ -29,6 +33,9 @@ private:
     int height;
 
     int frameCount;
+
+    QVMetadataSection *textSection;
+    QVMetadataSection *exifSection;
 
 public:
     // If Qt 5.10 is available, the built-in function will be used--for Qt 5.9, a custom solution
