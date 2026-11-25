@@ -28,7 +28,9 @@ try {
         throw 'App and installer versions do not match.'
     }
     $tag = "v$version"
-    $release = Invoke-Checked gh @('release', 'view', $tag, '-R', $repo, '--json', 'isDraft,assets') | ConvertFrom-Json
+    $releaseJson = & gh release view $tag -R $repo --json isDraft,assets 2>$null
+    if ($LASTEXITCODE -ne 0) { throw "No GitHub release $tag in $repo. Publish it from the tag first." }
+    $release = $releaseJson | ConvertFrom-Json
     if ($release.isDraft) { throw "Publish the $tag release before uploading." }
     $filename = "qView-$version-win64.exe"
     if ($release.assets.name -contains $filename) { throw "$filename is already on $tag; refusing to overwrite it." }
