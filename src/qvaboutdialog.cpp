@@ -59,7 +59,8 @@ QVAboutDialog::QVAboutDialog(double givenLatestVersionNum, QWidget *parent)
     font4.setStyleName("Regular");
     const QString labelText2 =
             tr("Built with Qt %1 (%2)<br>"
-               R"(Source code available under GPLv3 on <a style="color: #03A9F4; text-decoration:none;" href="https://github.com/jurplel/qView">GitHub</a><br>)"
+               "Fork maintained by Metrized Consulting Inc.<br>"
+               R"(GPLv3 source: <a style="color: #03A9F4; text-decoration:none;" href="https://github.com/metrized-inc/qView">Metrized fork</a> · <a style="color: #03A9F4; text-decoration:none;" href="https://github.com/jurplel/qView">Upstream qView</a><br>)"
                "Icon glyph created by Guilhem from the Noun Project<br>"
                "Copyright © %3 jurplel and qView contributors")
                     .arg(QT_VERSION_STR, QSysInfo::buildCpuArchitecture(), "2018-2025");

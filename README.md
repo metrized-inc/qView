@@ -2,12 +2,23 @@
 
 <p align=center>qView is an image viewer designed with minimalism and usability in mind.</p>
 
+<p align=center>
+    This modified <a href="https://github.com/jurplel/qView">qView fork</a> is maintained by Metrized Consulting Inc.
+    Original qView by jurplel and qView contributors.
+</p>
+
+<p align=center>
+    <a href="https://github.com/metrized-inc/qView/releases">Fork releases</a> |
+    <a href="CHANGELOG.md">Fork changelog</a> |
+    <a href="LICENSE">GPLv3 licence</a>
+</p>
+
 <h3 align=center>
-    <a href="https://interversehq.com/qview/">Visit the website</a>
+    <a href="https://interversehq.com/qview/">Visit the upstream website</a>
 </h3>
 
 <h4 align=center>
-    <a href="https://interversehq.com/qview/download">Downloads</a> |
+    <a href="https://interversehq.com/qview/download">Upstream downloads</a> |
     <a href="https://interversehq.com/qview/changelog">Changelog</a> | <a href="https://interversehq.com/discord">Discord</a>
 </h4>
 

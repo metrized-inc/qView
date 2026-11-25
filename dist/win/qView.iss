@@ -1,10 +1,14 @@
 #define MyAppName "qView"
-#define MyAppPublisher "jurplel and qView contributors"
-#define MyAppURL "https://interversehq.com/qview/"
+#define MyAppPublisher "Metrized Consulting Inc."
+#define MyAppCopyrightHolders "jurplel and qView contributors"
+#define MyAppURL "https://github.com/metrized-inc/qView"
 #define MyAppExeName "qView.exe"
 
 ; Update these when building
 #define MyAppVersion "7.1"
+#ifndef MyStageDir
+  #define MyStageDir "qView-Win64"
+#endif
 #define MyAppYear "2025"
 
 [Setup]
@@ -14,8 +18,8 @@ AppPublisher={#MyAppPublisher}
 AppVersion={#MyAppVersion}
 AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisherURL={#MyAppURL}
-AppSupportURL={#MyAppURL}
-AppUpdatesURL={#MyAppURL}
+AppSupportURL={#MyAppURL}/issues
+AppUpdatesURL={#MyAppURL}/releases
 DefaultDirName={autopf}\{#MyAppName}
 LicenseFile=../../LICENSE
 #if "MyArch" == "x86"
@@ -31,7 +35,7 @@ WizardImageFile=wiz.bmp
 UninstallDisplayName={#MyAppName}
 UninstallDisplayIcon={app}\{#MyAppExeName}
 VersionInfoVersion={#MyAppVersion}
-AppCopyright=Copyright © 2018-{#MyAppYear}, {#MyAppPublisher}
+AppCopyright=Copyright © 2018-{#MyAppYear}, {#MyAppCopyrightHolders}
 MinVersion=0,6.1
 DisableProgramGroupPage=yes
 ChangesAssociations=yes
@@ -62,7 +66,7 @@ Source: "qView-Win32/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 #elif "MyArch" == "arm64"
 Source: "qView-WinArm64/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 #else
-Source: "qView-Win64/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+Source: "{#MyStageDir}/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 #endif
 Source: "qView.VisualElementsManifest.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "win-tile-m.png"; DestDir: "{app}"; Flags: ignoreversion
@@ -78,7 +82,7 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChang
 [Registry]
 ; Key that specifies exe path to file associations
 Root: HKA; Subkey: "SOFTWARE\Classes\{#MyAppName}.1"; Flags: uninsdeletekey; Tasks: fileassociation
-Root: HKA; Subkey: "SOFTWARE\Classes\{#MyAppName}.1\shell\open\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1""""; Tasks: fileassociation
+Root: HKA; Subkey: "SOFTWARE\Classes\{#MyAppName}.1\shell\open\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Tasks: fileassociation
 
 ; File associations that point to the above key
 Root: HKA; Subkey: "SOFTWARE\Classes\.bmp\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppName}.1"; ValueData: ""; Flags: uninsdeletevalue; Tasks: fileassociation
@@ -120,7 +124,7 @@ Root: HKA; Subkey: "SOFTWARE\Classes\.pcx\OpenWithProgids"; ValueType: string; V
 Root: HKA; Subkey: "SOFTWARE\Classes\.pic\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppName}.1"; ValueData: ""; Flags: uninsdeletevalue; Tasks: fileassociation
 Root: HKA; Subkey: "SOFTWARE\Classes\.psd\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppName}.1"; ValueData: ""; Flags: uninsdeletevalue; Tasks: fileassociation
 Root: HKA; Subkey: "SOFTWARE\Classes\.ras\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppName}.1"; ValueData: ""; Flags: uninsdeletevalue; Tasks: fileassociation
-Root: HKA; Subkey. Subkey: "SOFTWARE\Classes\.rgb\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppName}.1"; ValueData: ""; Flags: uninsdeletevalue; Tasks: fileassociation
+Root: HKA; Subkey: "SOFTWARE\Classes\.rgb\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppName}.1"; ValueData: ""; Flags: uninsdeletevalue; Tasks: fileassociation
 Root: HKA; Subkey: "SOFTWARE\Classes\.rgba\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppName}.1"; ValueData: ""; Flags: uninsdeletevalue; Tasks: fileassociation
 Root: HKA; Subkey: "SOFTWARE\Classes\.sgi\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppName}.1"; ValueData: ""; Flags: uninsdeletevalue; Tasks: fileassociation
 Root: HKA; Subkey: "SOFTWARE\Classes\.tga\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppName}.1"; ValueData: ""; Flags: uninsdeletevalue; Tasks: fileassociation
