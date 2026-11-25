@@ -675,8 +675,7 @@ QColor QVImageCore::computeTopStripColor(const QImage &image)
         return {};
 
     const int width = image.width();
-    const int stripHeight = qMax(1, image.height() / 10);
-    const int rowStep = qMax(1, stripHeight / 16);
+    const int stripHeight = qMin(10, image.height());
     const int colStep = qMax(1, width / 64);
 
     quint64 rSum = 0;
@@ -686,7 +685,7 @@ QColor QVImageCore::computeTopStripColor(const QImage &image)
     quint64 count = 0;
 
     if (image.format() == QImage::Format_ARGB32_Premultiplied) {
-        for (int y = 0; y < stripHeight; y += rowStep) {
+        for (int y = 0; y < stripHeight; ++y) {
             const QRgb *line = reinterpret_cast<const QRgb *>(image.constScanLine(y));
             for (int x = 0; x < width; x += colStep) {
                 const QRgb px = line[x];
@@ -698,7 +697,7 @@ QColor QVImageCore::computeTopStripColor(const QImage &image)
             }
         }
     } else {
-        for (int y = 0; y < stripHeight; y += rowStep) {
+        for (int y = 0; y < stripHeight; ++y) {
             for (int x = 0; x < width; x += colStep) {
                 const QColor c = image.pixelColor(x, y);
                 const int a = c.alpha();

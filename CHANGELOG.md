@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Match the Windows title bar to the top 10 pixels of the image instead of the top 10%, for a closer match to the edge.
+
 ## [8.0] - 2026-11-24
 
 - Show PNG text chunks and EXIF metadata in File Info. Open long values in an editor, with JSON formatted for readability.
