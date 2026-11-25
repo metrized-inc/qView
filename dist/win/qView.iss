@@ -5,7 +5,7 @@
 #define MyAppExeName "qView.exe"
 
 ; Update these when building
-#define MyAppVersion "8.0"
+#define MyAppVersion "8.1"
 #ifndef MyStageDir
   #define MyStageDir "qView-Win64"
 #endif
