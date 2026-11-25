@@ -1,0 +1,30 @@
+name: On Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Extract notes for this tag
+        run: |
+          python scripts/release.py "$GITHUB_REF_NAME" --output changelog-entry.md
+          repo_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
+          source_url="$repo_url/tree/$GITHUB_REF_NAME"
+          {
+            printf '%s\n\n' 'This is a modified qView build maintained by Metrized Consulting Inc. Original qView by [jurplel and qView contributors](https://github.com/jurplel/qView).'
+            cat changelog-entry.md
+            printf '\n[GPLv3 source and build scripts for %s](%s) · [Source archive](%s/archive/refs/tags/%s.zip)\n' \
+              "$GITHUB_REF_NAME" "$source_url" "$repo_url" "$GITHUB_REF_NAME"
+          } > release-notes.md
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --verify-tag --title "qView $GITHUB_REF_NAME" --notes-file release-notes.md
