@@ -6,4 +6,4 @@
     <img alt="Screenshot" src="https://interversehq.com/qview/assets/img/screenshot3.png">
 </p>
 
-> Fork maintained by Metrized Inc.
+> Fork maintained by Metrized Inc. Main change is small addition for viewing custom iTXt and EXIF data
